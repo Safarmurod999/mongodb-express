@@ -1,5 +1,6 @@
 import mongoose from "mongoose";
 import { Authors } from "../models/authors.model.js";
+import { Books } from "../models/books.model.js";
 
 class AuthorsController {
   async getAuthors(req, res) {
@@ -62,16 +63,16 @@ class AuthorsController {
       const { id } = req.params;
       const { name, biography } = req.body;
 
-      const author = await Authors.findOne({ _id: id });
+      const author = await Authors.findById(id);
 
       if (!author) {
         return res
           .status(404)
           .json({ status: 400, data: null, error: "Author not found" });
       }
-      await Authors.updateOne({
-        name: name ?? Authors.name,
-        biography: biography ?? Authors.biography,
+      await author.updateOne({
+        name: name ?? author.name,
+        biography: biography ?? author.biography,
       });
 
       res.status(201).json({ status: 201, data: author, error: null });
@@ -90,7 +91,8 @@ class AuthorsController {
           .status(404)
           .json({ status: 404, data: null, error: "Author not found" });
       }
-      await Authors.deleteOne();
+      await author.deleteOne();
+      await Books.deleteMany({ author: id });
 
       res.status(201).json({ status: 201, data: author, error: null });
     } catch (error) {

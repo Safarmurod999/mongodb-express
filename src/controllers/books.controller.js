@@ -70,14 +70,15 @@ class BooksController {
       const { id } = req.params;
       const { title, author, category, publishedYear, summary } = req.body;
 
-      const book = await Books.findOne({ _id: id });
+      const book = await Books.findById(id);
 
       if (!book) {
         return res
           .status(404)
           .json({ status: 400, data: null, error: "Book not found" });
       }
-      await Books.updateOne({
+      
+      await book.updateOne({
         title: title ?? book.title,
         author: author ?? book.author,
         category: category ?? book.category,
@@ -101,7 +102,7 @@ class BooksController {
           .status(404)
           .json({ status: 404, data: null, error: "Book not found" });
       }
-      await Books.deleteOne();
+      await book.deleteOne();
 
       res.status(200).json({ status: 200, data: book, error: null });
     } catch (error) {

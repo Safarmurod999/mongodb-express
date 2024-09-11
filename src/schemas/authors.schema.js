@@ -1,4 +1,5 @@
 import { Schema } from "mongoose";
+import { Books } from "../models/books.model.js";
 
 export const authorsSchema = new Schema({
   _id: Schema.Types.ObjectId,

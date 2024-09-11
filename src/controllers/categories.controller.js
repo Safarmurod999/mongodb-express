@@ -1,5 +1,6 @@
 import mongoose from "mongoose";
 import { Categories } from "../models/categories.model.js";
+import { Books } from "../models/books.model.js";
 
 class CategoriesController {
   async getCategories(req, res) {
@@ -70,7 +71,8 @@ class CategoriesController {
           .status(404)
           .json({ status: 400, data: null, error: "Category not found" });
       }
-      await Categories.updateOne({
+
+      await category.updateOne({
         name: name ?? category.name,
         description: description ?? category.description,
       });
@@ -91,8 +93,8 @@ class CategoriesController {
           .status(404)
           .json({ status: 404, data: null, error: "Category not found" });
       }
-      await Categories.deleteOne();
-
+      await category.deleteOne();
+      await Books.deleteMany({ author: id });
       res.status(201).json({ status: 201, data: category, error: null });
     } catch (error) {
       console.log(error.message);
